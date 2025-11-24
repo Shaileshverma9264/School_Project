@@ -1,0 +1,119 @@
+/* HEADER SECTION */
+.header-container {
+  width: 100%;
+  background: linear-gradient(90deg, #f5a75e, #ff9b33);
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.header-logo {
+  width: 150px;
+  height: fit-content;
+}
+
+.header-text {
+  flex: 1;
+  text-align: center;
+}
+
+.eng-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: rgb(232, 236, 240);
+  text-shadow: 2px 2px 5px #90da7e;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.hin-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffebeb;
+  margin-top: -8px;
+  text-shadow: 2px 2px 5px #900;
+}
+
+.gorakhpur-text {
+  margin-top: -2px;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+}
+
+.header-person {
+  width: 120px;
+}
+
+/* NAVBAR */
+.menu-bar {
+  background: #d17e42 !important;
+  padding: 4px 0;
+}
+
+.menu-wrapper {
+  display: flex;
+  gap: 25px;
+}
+
+.menu-item {
+  color: white !important;
+  position: relative;
+  font-weight: bold !important;
+  font-size: 15px;
+  text-transform: none !important;
+}
+
+/* Underline Animation */
+.menu-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 3px;
+  background: white;
+  transition: 0.3s;
+}
+
+.menu-item:hover::after {
+  width: 100%;
+}
+
+/* Hover glow */
+.menu-item:hover {
+  color: yellow !important;
+  text-shadow: 0 0 8px white;
+}
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #e0661fff;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000;
+}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-logo,
+  .header-person {
+    width: 180px;
+  }
+
+  .eng-title {
+    font-size: 24px;
+  }
+  .hin-title {
+    font-size: 20px;
+  }
+  .gorakhpur-text {
+    font-size: 16px;
+  }
+}
