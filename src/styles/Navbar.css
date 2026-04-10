@@ -1,10 +1,43 @@
 /* HEADER SECTION */
-.header-container {
-  width: 100%;
-  background: linear-gradient(90deg, #f5a75e, #ff9b33);
+/* .header-container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px;
+  background: white;
+} */
+
+.header-person {
+  height: 120px;
+  border-radius: 50%;
+  width: 130px;
+  padding-left: 10px;
+}
+
+.banner-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  width: 100%;
+}
+
+.menu-bar {
+  background: #e96b11 !important;
+  padding: 4px 0;
+}
+
+.menu-wrapper {
+  display: flex;
+  gap: 25px;
+}
+
+.menu-item {
+  text-transform: none;
+  color: white !important;
+  position: relative;
+  font-weight: bold !important;
+  font-size: 15px;
+  text-transform: none !important;
 }
 
 .header-logo {
@@ -40,28 +73,7 @@
   font-weight: bold;
 }
 
-.header-person {
-  width: 120px;
-}
-
 /* NAVBAR */
-.menu-bar {
-  background: #d17e42 !important;
-  padding: 4px 0;
-}
-
-.menu-wrapper {
-  display: flex;
-  gap: 25px;
-}
-
-.menu-item {
-  color: white !important;
-  position: relative;
-  font-weight: bold !important;
-  font-size: 15px;
-  text-transform: none !important;
-}
 
 /* Underline Animation */
 .menu-item::after {
@@ -115,5 +127,24 @@
   }
   .gorakhpur-text {
     font-size: 16px;
+  }
+}
+
+/* MOBILE STYLES */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-person {
+    margin-top: 10px;
+    height: 90px;
+    width: 90px;
+  }
+
+  .banner-img {
+    width: 100%;
+    height: auto;
   }
 }

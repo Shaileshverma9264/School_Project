@@ -1,10 +1,17 @@
 import React from "react";
 import { Typography, Grid, Card, CardContent } from "@mui/material";
+import image from "../images/digvijay.jpg";
 
 const faculty = [
-  { name: "Dr. A. Mehta", dept: "Computer Science" },
-  { name: "Dr. R. Sharma", dept: "Physics" },
-  { name: "Dr. P. Verma", dept: "Commerce" },
+  { name: "Dr. A. Mehta", dept: "Computer Science", image: { image } },
+  { name: "Dr. R. Sharma", dept: "Physics", image: { image } },
+  { name: "Dr. P. Verma", dept: "Commerce", image: { image } },
+  { name: "Dr. A. Mehta", dept: "Computer Science", image: { image } },
+  { name: "Dr. R. Sharma", dept: "Physics", image: { image } },
+  { name: "Dr. P. Verma", dept: "Commerce", image: { image } },
+  { name: "Dr. A. Mehta", dept: "Computer Science", image: { image } },
+  { name: "Dr. R. Sharma", dept: "Physics", image: { image } },
+  { name: "Dr. P. Verma", dept: "Commerce", image: { image } },
 ];
 
 export default function Faculty() {

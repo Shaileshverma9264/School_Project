@@ -1,16 +1,8 @@
 import React from "react";
 import { Grid, CardMedia, Card } from "@mui/material";
+import image1 from "../images/galleryimages/image1.jpeg";
 
-const images = [
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-  "https://www.k12digest.com/wp-content/uploads/2024/03/1-3.jpg",
-];
+const images = [image1, image1, image1, image1, image1, image1, image1, image1];
 
 export default function GalleryGrid() {
   return (
@@ -19,8 +11,11 @@ export default function GalleryGrid() {
         <Grid item xs={12} sm={6} md={3} key={i}>
           <Card>
             <CardMedia
+              sx={{
+                height: 150,
+                objectFit: "contain",
+              }}
               component="img"
-              height="140"
               image={src}
               alt={`img-${i}`}
             />

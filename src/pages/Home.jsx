@@ -1,8 +1,10 @@
 import React from "react";
 import { Box, Typography, Button, Grid, Paper } from "@mui/material";
 import CourseCard from "../components/CourseCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
   const courses = [
     { title: "B.Sc Computer Science", duration: "3 years", seats: 60 },
     { title: "B.Com", duration: "3 years", seats: 80 },
@@ -19,7 +21,9 @@ export default function Home() {
           Empowering students for a better future through quality education and
           holistic development.
         </Typography>
-        <Button variant="contained">Explore Admissions</Button>
+        <Button variant="contained" onClick={() => navigate("/admissions")}>
+          Explore Admissions
+        </Button>
       </Paper>
 
       <Typography variant="h5" sx={{ mb: 2 }}>
