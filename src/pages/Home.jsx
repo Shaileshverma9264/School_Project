@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Button, Grid, Paper } from "@mui/material";
 import CourseCard from "../components/CourseCard";
 import { useNavigate } from "react-router-dom";
+import ImageCarousel from "../components/ImageCarausel";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -44,6 +45,16 @@ export default function Home() {
   return (
     <Box>
       <Paper sx={{ p: 4, mb: 4 }}>
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            p: 2,
+            borderRadius: 2,
+            boxShadow: 2,
+          }}
+        >
+          <ImageCarousel />
+        </Box>
         <Typography variant="h3" gutterBottom>
           Welcome to MyCollege
         </Typography>
