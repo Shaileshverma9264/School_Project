@@ -822,17 +822,6 @@ export default function FacultySection() {
             ))}
           </Grid>
         </Container>
-
-        {/* Footer */}
-        <Box sx={{ bgcolor: "#BF360C", py: 3, textAlign: "center" }}>
-          <Typography
-            variant="body2"
-            sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 300 }}
-          >
-            © 2026 Digvijaynath Intermediate College, Chowk Bazar, Maharajganj —
-            All Rights Reserved.
-          </Typography>
-        </Box>
       </Box>
 
       <ProfileDialog member={selected} onClose={() => setSelected(null)} />
