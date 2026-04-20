@@ -17,7 +17,6 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 
-// ─── Mock Data ───────────────────────────────────────────────
 const features = [
   { icon: "📊", text: "View exam results & marksheets instantly" },
   { icon: "📅", text: "Track attendance & timetable" },
@@ -55,7 +54,6 @@ const actions = [
   "📝 Leave",
 ];
 
-// ─── Shared Styles ────────────────────────────────────────────
 const cardHover = {
   borderRadius: 4,
   border: "1.5px solid #ece8e2",
@@ -76,7 +74,6 @@ const fieldSx = {
   "& label.Mui-focused": { color: "#e85d04" },
 };
 
-// ─── Component ────────────────────────────────────────────────
 export default function StudentPortal() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [tab, setTab] = useState(0);
@@ -100,24 +97,24 @@ export default function StudentPortal() {
   );
 }
 
-// ─── Login Page ───────────────────────────────────────────────
 function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
   return (
     <Box
       sx={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        minHeight: "88vh",
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: "100vh",
       }}
     >
       {/* Left Panel */}
       <Box
         sx={{
           background: "linear-gradient(145deg,#1a0a00,#3d1200 45%,#7a2600)",
-          p: { xs: 4, md: 7 },
+          p: { xs: 3, sm: 4, md: 7 },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          flex: { md: 1 },
         }}
       >
         <Chip
@@ -125,9 +122,10 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
           sx={{
             bgcolor: "rgba(255,255,255,0.1)",
             color: "#ffd580",
-            mb: 3,
+            mb: 2,
             alignSelf: "flex-start",
             fontWeight: 700,
+            fontSize: { xs: 12, sm: 13 },
           }}
         />
         <Typography
@@ -136,6 +134,8 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
             fontFamily: "'Playfair Display',serif",
             color: "#fff",
             mb: 1.5,
+            fontSize: { xs: "22px", sm: "28px", md: "38px" },
+            lineHeight: 1.2,
           }}
         >
           Your Academic{" "}
@@ -145,37 +145,48 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
           Awaits
         </Typography>
         <Typography
-          sx={{ color: "rgba(255,255,255,.65)", mb: 4, lineHeight: 1.7 }}
+          sx={{
+            color: "rgba(255,255,255,.65)",
+            mb: { xs: 2.5, md: 4 },
+            lineHeight: 1.7,
+            fontSize: { xs: 13, sm: 14 },
+          }}
         >
           Access results, attendance, resources, and everything you need — all
           secure.
         </Typography>
-        <Stack spacing={1.5} mb={4}>
+
+        {/* Hide features list on very small screens to save space */}
+        <Stack
+          spacing={1}
+          mb={{ xs: 2.5, md: 4 }}
+          sx={{ display: { xs: "none", sm: "flex" } }}
+        >
           {features.map((f) => (
             <Stack key={f.text} direction="row" gap={1.5} alignItems="center">
               <Box
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2.5,
+                  width: 36,
+                  height: 36,
+                  minWidth: 36,
+                  borderRadius: 2,
                   bgcolor: "rgba(255,255,255,.08)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 18,
+                  fontSize: 16,
                 }}
               >
                 {f.icon}
               </Box>
-              <Typography
-                sx={{ color: "rgba(255,255,255,.8)", fontSize: 13.5 }}
-              >
+              <Typography sx={{ color: "rgba(255,255,255,.8)", fontSize: 13 }}>
                 {f.text}
               </Typography>
             </Stack>
           ))}
         </Stack>
-        <Stack direction="row" gap={3}>
+
+        <Stack direction="row" gap={{ xs: 2, sm: 3 }} flexWrap="wrap">
           {[
             ["5000+", "Students"],
             ["70+", "Years"],
@@ -186,7 +197,7 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
               <Typography
                 sx={{
                   fontFamily: "'Playfair Display',serif",
-                  fontSize: 24,
+                  fontSize: { xs: 20, sm: 24 },
                   color: "#f48c06",
                   fontWeight: 800,
                 }}
@@ -195,7 +206,7 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
               </Typography>
               <Typography
                 sx={{
-                  fontSize: 11,
+                  fontSize: 10,
                   color: "rgba(255,255,255,.5)",
                   textTransform: "uppercase",
                   letterSpacing: 1,
@@ -212,10 +223,11 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
       <Box
         sx={{
           bgcolor: "#fff",
-          p: { xs: 4, md: 7 },
+          p: { xs: 3, sm: 4, md: 7 },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          flex: { md: 1 },
         }}
       >
         <Typography
@@ -232,7 +244,11 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
         </Typography>
         <Typography
           variant="h4"
-          sx={{ fontFamily: "'Playfair Display',serif", mb: 0.5 }}
+          sx={{
+            fontFamily: "'Playfair Display',serif",
+            mb: 0.5,
+            fontSize: { xs: "22px", sm: "28px", md: "34px" },
+          }}
         >
           Welcome Back 👋
         </Typography>
@@ -243,6 +259,8 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
         <Tabs
           value={tab}
           onChange={onTab}
+          variant="scrollable"
+          scrollButtons="auto"
           sx={{
             mb: 3,
             bgcolor: "#f5f0eb",
@@ -253,6 +271,8 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
               fontWeight: 600,
               color: "#888",
               textTransform: "none",
+              minHeight: 40,
+              fontSize: { xs: 13, sm: 14 },
             },
             "& .Mui-selected": { color: "#e85d04 !important" },
             "& .MuiTabs-indicator": { display: "none" },
@@ -300,9 +320,10 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
           sx={{
             background: "linear-gradient(135deg,#e85d04,#f48c06)",
             borderRadius: 3,
-            py: 1.8,
+            py: { xs: 1.5, md: 1.8 },
             fontWeight: 700,
-            fontSize: 15,
+            fontSize: { xs: 14, md: 15 },
+            minHeight: 48,
             "&:hover": {
               boxShadow: "0 10px 28px rgba(232,93,4,.35)",
               transform: "translateY(-2px)",
@@ -325,17 +346,18 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
                 <CardContent
                   sx={{
                     display: "flex",
-                    gap: 1.5,
+                    gap: 1,
                     alignItems: "center",
                     py: "12px !important",
+                    px: { xs: "10px !important", sm: "16px !important" },
                   }}
                 >
-                  <Typography fontSize={20}>{q.icon}</Typography>
-                  <Box>
-                    <Typography fontWeight={600} fontSize={13}>
+                  <Typography fontSize={18}>{q.icon}</Typography>
+                  <Box overflow="hidden">
+                    <Typography fontWeight={600} fontSize={12} noWrap>
                       {q.title}
                     </Typography>
-                    <Typography fontSize={11} color="text.secondary">
+                    <Typography fontSize={11} color="text.secondary" noWrap>
                       {q.sub}
                     </Typography>
                   </Box>
@@ -349,26 +371,38 @@ function LoginPage({ tab, uid, pwd, onTab, onUid, onPwd, onLogin }) {
   );
 }
 
-// ─── Dashboard ────────────────────────────────────────────────
 function Dashboard({ onLogout }) {
   return (
-    <Box sx={{ maxWidth: 1100, mx: "auto", p: 4 }}>
+    <Box
+      sx={{
+        maxWidth: 1100,
+        mx: "auto",
+        px: { xs: 1.5, sm: 3, md: 4 },
+        py: { xs: 2, sm: 4 },
+      }}
+    >
       {/* Header */}
       <Box
         sx={{
           background: "linear-gradient(120deg,#1a0a00,#3d1200 40%,#e85d04)",
-          borderRadius: 4,
-          p: 4,
-          mb: 3.5,
+          borderRadius: { xs: 3, md: 4 },
+          p: { xs: 2.5, sm: 3, md: 4 },
+          mb: 3,
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 2,
         }}
       >
         <Box>
           <Typography
             variant="h5"
-            sx={{ fontFamily: "'Playfair Display',serif", color: "#fff" }}
+            sx={{
+              fontFamily: "'Playfair Display',serif",
+              color: "#fff",
+              fontSize: { xs: "18px", sm: "22px", md: "24px" },
+            }}
           >
             Welcome back,{" "}
             <Box component="span" sx={{ color: "#f48c06" }}>
@@ -377,7 +411,11 @@ function Dashboard({ onLogout }) {
             👋
           </Typography>
           <Typography
-            sx={{ color: "rgba(255,255,255,.65)", mt: 0.5, fontSize: 14 }}
+            sx={{
+              color: "rgba(255,255,255,.65)",
+              mt: 0.5,
+              fontSize: { xs: 12, sm: 14 },
+            }}
           >
             Roll No: 2024-SC-0042 | Class XII – Science | Session 2025–26
           </Typography>
@@ -386,9 +424,12 @@ function Dashboard({ onLogout }) {
           variant="outlined"
           startIcon={<LogoutIcon />}
           onClick={onLogout}
+          size="small"
           sx={{
             color: "#fff",
             borderColor: "rgba(255,255,255,.3)",
+            minHeight: 40,
+            whiteSpace: "nowrap",
             "&:hover": { bgcolor: "rgba(255,255,255,.1)" },
           }}
         >
@@ -397,22 +438,24 @@ function Dashboard({ onLogout }) {
       </Box>
 
       {/* Stats */}
-      <Grid container spacing={2} mb={3}>
+      <Grid container spacing={{ xs: 1.5, sm: 2 }} mb={3}>
         {[
           ["📊", "Attendance", "87%", "This semester"],
           ["🏆", "Overall Grade", "A+", "Last exam"],
           ["📚", "Subjects", "6", "Enrolled"],
           ["💳", "Fee Status", "Paid ✓", "2025–26"],
         ].map(([icon, lbl, val, sub]) => (
-          <Grid item xs={3} key={lbl}>
+          <Grid item xs={6} sm={6} md={3} key={lbl}>
             <Card elevation={0} sx={cardHover}>
-              <CardContent>
-                <Typography fontSize={22} mb={1}>
+              <CardContent
+                sx={{ p: { xs: "12px !important", sm: "16px !important" } }}
+              >
+                <Typography fontSize={20} mb={0.5}>
                   {icon}
                 </Typography>
                 <Typography
                   sx={{
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: 700,
                     color: "#999",
                     textTransform: "uppercase",
@@ -424,14 +467,15 @@ function Dashboard({ onLogout }) {
                 <Typography
                   sx={{
                     fontFamily: "'Playfair Display',serif",
-                    fontSize: 28,
+                    fontSize: { xs: 22, sm: 28 },
                     color: "#e85d04",
                     fontWeight: 800,
+                    lineHeight: 1.1,
                   }}
                 >
                   {val}
                 </Typography>
-                <Typography fontSize={12} color="text.secondary">
+                <Typography fontSize={11} color="text.secondary">
                   {sub}
                 </Typography>
               </CardContent>
@@ -441,13 +485,19 @@ function Dashboard({ onLogout }) {
       </Grid>
 
       {/* Main Grid */}
-      <Grid container spacing={2.5}>
-        <Grid item xs={7}>
-          <Card elevation={0} sx={{ ...cardHover, mb: 2.5 }}>
-            <CardContent>
+      <Grid container spacing={{ xs: 2, sm: 2.5 }}>
+        <Grid item xs={12} md={7}>
+          <Card elevation={0} sx={{ ...cardHover, mb: { xs: 2, sm: 2.5 } }}>
+            <CardContent
+              sx={{ p: { xs: "16px !important", sm: "20px !important" } }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "'Playfair Display',serif", mb: 2 }}
+                sx={{
+                  fontFamily: "'Playfair Display',serif",
+                  mb: 2,
+                  fontSize: { xs: "16px", sm: "18px" },
+                }}
               >
                 🔔 Latest Notices
               </Typography>
@@ -463,7 +513,10 @@ function Dashboard({ onLogout }) {
                     mb: 1,
                   }}
                 >
-                  <Typography fontWeight={600} fontSize={13.5}>
+                  <Typography
+                    fontWeight={600}
+                    fontSize={{ xs: 12.5, sm: 13.5 }}
+                  >
                     {n.title}
                   </Typography>
                   <Typography fontSize={11} color="text.secondary">
@@ -473,11 +526,18 @@ function Dashboard({ onLogout }) {
               ))}
             </CardContent>
           </Card>
+
           <Card elevation={0} sx={cardHover}>
-            <CardContent>
+            <CardContent
+              sx={{ p: { xs: "16px !important", sm: "20px !important" } }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "'Playfair Display',serif", mb: 2 }}
+                sx={{
+                  fontFamily: "'Playfair Display',serif",
+                  mb: 2,
+                  fontSize: { xs: "16px", sm: "18px" },
+                }}
               >
                 📊 Recent Results
               </Typography>
@@ -486,31 +546,39 @@ function Dashboard({ onLogout }) {
                   key={r.sub}
                   direction="row"
                   justifyContent="space-between"
+                  alignItems="center"
                   py={1.2}
                   borderBottom={
                     i < results.length - 1 ? "1px solid #f5f0eb" : ""
                   }
                 >
-                  <Typography fontWeight={600} fontSize={14}>
+                  <Typography fontWeight={600} fontSize={{ xs: 13, sm: 14 }}>
                     {r.sub}
                   </Typography>
                   <Chip
                     label={r.grade}
                     size="small"
                     color={r.color}
-                    sx={{ fontWeight: 700 }}
+                    sx={{ fontWeight: 700, fontSize: { xs: 11, sm: 12 } }}
                   />
                 </Stack>
               ))}
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={5}>
-          <Card elevation={0} sx={{ ...cardHover, mb: 2.5 }}>
-            <CardContent>
+
+        <Grid item xs={12} md={5}>
+          <Card elevation={0} sx={cardHover}>
+            <CardContent
+              sx={{ p: { xs: "16px !important", sm: "20px !important" } }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "'Playfair Display',serif", mb: 2 }}
+                sx={{
+                  fontFamily: "'Playfair Display',serif",
+                  mb: 2,
+                  fontSize: { xs: "16px", sm: "18px" },
+                }}
               >
                 ⚡ Quick Actions
               </Typography>
@@ -525,9 +593,23 @@ function Dashboard({ onLogout }) {
                         textAlign: "center",
                       }}
                     >
-                      <CardContent sx={{ py: "14px !important" }}>
-                        <Typography fontSize={22}>{a.split(" ")[0]}</Typography>
-                        <Typography fontSize={12} fontWeight={700}>
+                      <CardContent
+                        sx={{
+                          py: "14px !important",
+                          px: "8px !important",
+                          minHeight: 44,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 0.5,
+                        }}
+                      >
+                        <Typography fontSize={20}>{a.split(" ")[0]}</Typography>
+                        <Typography
+                          fontSize={{ xs: 11, sm: 12 }}
+                          fontWeight={700}
+                        >
                           {a.split(" ").slice(1).join(" ")}
                         </Typography>
                       </CardContent>

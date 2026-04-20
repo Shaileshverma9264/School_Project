@@ -1,22 +1,3 @@
-// import React from 'react';
-// import { Typography, Box, List, ListItem } from '@mui/material';
-
-// export default function Admissions(){
-//   return (
-//     <Box>
-//       <Typography variant="h4" gutterBottom>Admissions 2025-26</Typography>
-//       <Typography>Join our UG & PG programs. Below are quick links and information:</Typography>
-//       <List>
-//         <ListItem>Online Application Form (placeholder)</ListItem>
-//         <ListItem>Eligibility Criteria</ListItem>
-//         <ListItem>Important Dates</ListItem>
-//         <ListItem>Fee Structure</ListItem>
-//       </List>
-//     </Box>
-//   );
-//      <h1></h1>
-// }
-
 import {
   Box,
   Typography,
@@ -97,13 +78,13 @@ const eligibility = [
 export default function AdmissionsSection() {
   return (
     <Box sx={{ bgcolor: "#f5f0eb" }}>
-      {/* Hero */}
+      {/* ── Hero ── */}
       <Box
         sx={{
           background:
             "linear-gradient(120deg,#1a0a00 0%,#3d1200 40%,#e85d04 100%)",
-          px: { xs: 3, md: 8 },
-          py: { xs: 6, md: 8 },
+          px: { xs: 3, sm: 5, md: 8 },
+          py: { xs: 5, sm: 6, md: 8 },
         }}
       >
         <Chip
@@ -113,6 +94,7 @@ export default function AdmissionsSection() {
             color: "#ffd580",
             mb: 2,
             fontWeight: 700,
+            fontSize: { xs: 12, sm: 13 },
           }}
         />
         <Typography
@@ -121,6 +103,8 @@ export default function AdmissionsSection() {
             fontFamily: "'Playfair Display',serif",
             color: "#fff",
             mb: 1.5,
+            fontSize: { xs: "26px", sm: "36px", md: "48px" },
+            lineHeight: 1.2,
           }}
         >
           Shape Your Future
@@ -132,19 +116,27 @@ export default function AdmissionsSection() {
           College
         </Typography>
         <Typography
-          sx={{ color: "rgba(255,255,255,0.72)", mb: 4, maxWidth: 520 }}
+          sx={{
+            color: "rgba(255,255,255,0.72)",
+            mb: 4,
+            maxWidth: 520,
+            fontSize: { xs: 13, sm: 15 },
+          }}
         >
           Join our UG & PG programs at Chowk Bazar, Maharajganj. A legacy of
           excellence since 1950.
         </Typography>
-        <Stack direction="row" gap={2}>
+        <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
           <Button
             variant="contained"
             endIcon={<ArrowForwardIcon />}
+            fullWidth={false}
             sx={{
               bgcolor: "#e85d04",
               borderRadius: 2,
               fontWeight: 700,
+              minHeight: 44,
+              alignSelf: { xs: "stretch", sm: "auto" },
               "&:hover": { bgcolor: "#cf4f00" },
             }}
           >
@@ -157,6 +149,8 @@ export default function AdmissionsSection() {
               borderColor: "rgba(255,255,255,0.4)",
               borderRadius: 2,
               fontWeight: 600,
+              minHeight: 44,
+              alignSelf: { xs: "stretch", sm: "auto" },
             }}
           >
             Download Prospectus
@@ -164,13 +158,13 @@ export default function AdmissionsSection() {
         </Stack>
       </Box>
 
-      {/* Stats */}
+      {/* ── Stats Bar ── */}
       <Box
         sx={{
           bgcolor: "#fff",
           borderBottom: "3px solid #f48c06",
-          display: "flex",
-          justifyContent: "center",
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" },
         }}
       >
         {[
@@ -178,21 +172,27 @@ export default function AdmissionsSection() {
           ["5000+", "Students Enrolled"],
           ["9", "Departments"],
           ["98%", "Pass Rate"],
-        ].map(([n, l]) => (
+        ].map(([n, l], i) => (
           <Box
             key={l}
             sx={{
-              px: 6,
-              py: 3,
+              px: { xs: 2, sm: 4, md: 6 },
+              py: { xs: 2, md: 3 },
               textAlign: "center",
-              borderRight: "1px solid #f0ebe5",
-              "&:last-child": { borderRight: "none" },
+              borderRight: {
+                xs: i % 2 === 0 ? "1px solid #f0ebe5" : "none",
+                md: i < 3 ? "1px solid #f0ebe5" : "none",
+              },
+              borderBottom: {
+                xs: i < 2 ? "1px solid #f0ebe5" : "none",
+                md: "none",
+              },
             }}
           >
             <Typography
               sx={{
                 fontFamily: "'Playfair Display',serif",
-                fontSize: 30,
+                fontSize: { xs: 22, sm: 26, md: 30 },
                 color: "#e85d04",
                 fontWeight: 800,
               }}
@@ -201,7 +201,7 @@ export default function AdmissionsSection() {
             </Typography>
             <Typography
               sx={{
-                fontSize: 11,
+                fontSize: { xs: 10, sm: 11 },
                 color: "#888",
                 fontWeight: 700,
                 letterSpacing: 1,
@@ -214,8 +214,16 @@ export default function AdmissionsSection() {
         ))}
       </Box>
 
-      {/* Quick Links */}
-      <Box sx={{ maxWidth: 1060, mx: "auto", px: 4, pt: 7 }}>
+      {/* ── Main Content ── */}
+      <Box
+        sx={{
+          maxWidth: 1060,
+          mx: "auto",
+          px: { xs: 2, sm: 3, md: 4 },
+          pt: { xs: 4, md: 7 },
+        }}
+      >
+        {/* Section label */}
         <Typography
           sx={{
             fontSize: 11,
@@ -232,6 +240,7 @@ export default function AdmissionsSection() {
           sx={{
             fontFamily: "'Playfair Display',serif",
             mb: 4,
+            fontSize: { xs: "22px", sm: "28px", md: "34px" },
             "&::after": {
               content: '""',
               display: "block",
@@ -245,7 +254,9 @@ export default function AdmissionsSection() {
         >
           Admission Resources
         </Typography>
-        <Grid container spacing={2.5} mb={7}>
+
+        {/* ── Quick Link Cards ── */}
+        <Grid container spacing={2} mb={{ xs: 4, md: 7 }}>
           {quickLinks.map((q) => (
             <Grid item xs={12} sm={6} md={3} key={q.title}>
               <Card
@@ -263,8 +274,8 @@ export default function AdmissionsSection() {
                   },
                 }}
               >
-                <CardContent sx={{ p: 3 }}>
-                  <Typography fontSize={28} mb={1.5}>
+                <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+                  <Typography fontSize={26} mb={1.5}>
                     {q.icon}
                   </Typography>
                   <Typography fontWeight={700} fontSize={15} mb={0.5}>
@@ -286,16 +297,24 @@ export default function AdmissionsSection() {
           ))}
         </Grid>
 
-        {/* Dates + Fees */}
+        {/* ── Dates + Fees ── */}
         <Grid container spacing={3} mb={4}>
           <Grid item xs={12} md={6}>
             <Card
               elevation={0}
-              sx={{ borderRadius: 4, border: "1.5px solid #ece8e2", p: 3 }}
+              sx={{
+                borderRadius: 4,
+                border: "1.5px solid #ece8e2",
+                p: { xs: 2.5, md: 3 },
+              }}
             >
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "'Playfair Display',serif", mb: 2.5 }}
+                sx={{
+                  fontFamily: "'Playfair Display',serif",
+                  mb: 2.5,
+                  fontSize: { xs: "16px", sm: "18px" },
+                }}
               >
                 📅 Important Dates
               </Typography>
@@ -306,6 +325,7 @@ export default function AdmissionsSection() {
                       sx={{
                         width: 14,
                         height: 14,
+                        minWidth: 14,
                         borderRadius: "50%",
                         bgcolor: "#e85d04",
                         mt: 0.5,
@@ -335,7 +355,7 @@ export default function AdmissionsSection() {
                     >
                       {d.date}
                     </Typography>
-                    <Typography fontWeight={600} fontSize={14}>
+                    <Typography fontWeight={600} fontSize={{ xs: 13, sm: 14 }}>
                       {d.event}
                     </Typography>
                     <Typography fontSize={12} color="text.secondary">
@@ -346,14 +366,23 @@ export default function AdmissionsSection() {
               ))}
             </Card>
           </Grid>
+
           <Grid item xs={12} md={6}>
             <Card
               elevation={0}
-              sx={{ borderRadius: 4, border: "1.5px solid #ece8e2", p: 3 }}
+              sx={{
+                borderRadius: 4,
+                border: "1.5px solid #ece8e2",
+                p: { xs: 2.5, md: 3 },
+              }}
             >
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "'Playfair Display',serif", mb: 2.5 }}
+                sx={{
+                  fontFamily: "'Playfair Display',serif",
+                  mb: 2.5,
+                  fontSize: { xs: "16px", sm: "18px" },
+                }}
               >
                 💰 Fee Structure
               </Typography>
@@ -364,13 +393,15 @@ export default function AdmissionsSection() {
                     justifyContent="space-between"
                     alignItems="center"
                     py={1.5}
+                    flexWrap="wrap"
+                    gap={1}
                   >
-                    <Typography fontSize={14} fontWeight={500}>
+                    <Typography fontSize={{ xs: 13, sm: 14 }} fontWeight={500}>
                       {f.name}
                     </Typography>
                     <Stack direction="row" alignItems="center" gap={1}>
                       <Typography
-                        fontSize={15}
+                        fontSize={{ xs: 14, sm: 15 }}
                         fontWeight={700}
                         color="#e85d04"
                       >
@@ -397,12 +428,12 @@ export default function AdmissionsSection() {
           </Grid>
         </Grid>
 
-        {/* Eligibility */}
+        {/* ── Eligibility ── */}
         <Paper
           sx={{
             background: "linear-gradient(135deg,#1a0a00,#3d1200)",
             borderRadius: 4,
-            p: 4,
+            p: { xs: 3, md: 4 },
             mb: 4,
           }}
         >
@@ -412,19 +443,25 @@ export default function AdmissionsSection() {
               fontFamily: "'Playfair Display',serif",
               color: "#fff",
               mb: 3,
+              fontSize: { xs: "18px", sm: "22px" },
             }}
           >
             ✅ Eligibility Criteria
           </Typography>
           <Grid container spacing={2}>
             {eligibility.map((e, i) => (
-              <Grid item xs={12} md={6} key={i}>
+              <Grid item xs={12} sm={6} key={i}>
                 <Stack direction="row" gap={1.5} alignItems="flex-start">
                   <CheckCircleOutlineIcon
-                    sx={{ color: "#e85d04", mt: 0.2, fontSize: 20 }}
+                    sx={{
+                      color: "#e85d04",
+                      mt: 0.2,
+                      fontSize: 20,
+                      flexShrink: 0,
+                    }}
                   />
                   <Typography
-                    fontSize={13.5}
+                    fontSize={{ xs: 13, sm: 13.5 }}
                     sx={{ color: "rgba(255,255,255,0.8)" }}
                   >
                     {e}
@@ -435,27 +472,38 @@ export default function AdmissionsSection() {
           </Grid>
         </Paper>
 
-        {/* CTA */}
+        {/* ── CTA ── */}
         <Box
           sx={{
             background: "linear-gradient(120deg,#e85d04,#f48c06)",
             borderRadius: 4,
-            p: { xs: 4, md: 5 },
+            p: { xs: 3, md: 5 },
+            mb: 4,
             display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
             justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
+            alignItems: { xs: "flex-start", sm: "center" },
             gap: 3,
           }}
         >
           <Box>
             <Typography
               variant="h5"
-              sx={{ fontFamily: "'Playfair Display',serif", color: "#fff" }}
+              sx={{
+                fontFamily: "'Playfair Display',serif",
+                color: "#fff",
+                fontSize: { xs: "18px", sm: "22px" },
+              }}
             >
               Ready to Begin Your Journey?
             </Typography>
-            <Typography sx={{ color: "rgba(255,255,255,0.8)", mt: 0.5 }}>
+            <Typography
+              sx={{
+                color: "rgba(255,255,255,0.8)",
+                mt: 0.5,
+                fontSize: { xs: 13, sm: 15 },
+              }}
+            >
               Applications for 2025–26 are open. Secure your seat today.
             </Typography>
           </Box>
@@ -467,6 +515,9 @@ export default function AdmissionsSection() {
               color: "#e85d04",
               fontWeight: 700,
               borderRadius: 2,
+              minHeight: 44,
+              whiteSpace: "nowrap",
+              alignSelf: { xs: "stretch", sm: "auto" },
               "&:hover": {
                 bgcolor: "#fff",
                 boxShadow: "0 8px 24px rgba(0,0,0,.15)",
