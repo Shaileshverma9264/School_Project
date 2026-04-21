@@ -16,6 +16,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { alpha } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 const theme = createTheme({
@@ -248,6 +249,7 @@ function useCountUp(target, duration = 1800, trigger = true) {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     setTimeout(() => setVisible(true), 80);
@@ -405,6 +407,9 @@ function Hero() {
               <Button
                 variant="outlined"
                 size="large"
+                onClick={() => {
+                  navigate("/courses");
+                }}
                 sx={{
                   borderColor: "rgba(255,255,255,0.3)",
                   color: "#fff",
@@ -710,6 +715,7 @@ function StatCardInner({ icon, label, value, delay, visible, index }) {
 // ── Course Card ───────────────────────────────────────────────────────────────
 function CourseCard({ course }) {
   const [hovered, setHovered] = useState(false);
+
   return (
     <Card
       onMouseEnter={() => setHovered(true)}
@@ -812,6 +818,7 @@ function CourseCard({ course }) {
 
 // ── Courses Section ───────────────────────────────────────────────────────────
 function CoursesSection() {
+  const navigate = useNavigate();
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -885,6 +892,9 @@ function CoursesSection() {
             variant="outlined"
             size="large"
             color="primary"
+            onClick={() => {
+              navigate("/courses");
+            }}
             sx={{
               px: 5,
               borderColor: "#e85d04",

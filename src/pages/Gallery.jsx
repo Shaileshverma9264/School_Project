@@ -1,18 +1,4 @@
-// import React from "react";
-// import { Typography } from "@mui/material";
-// import GalleryGrid from "../components/GalleryGrid";
-
-// export default function Gallery() {
-//   return (
-//     <div>
-//       <Typography variant="h4" gutterBottom>
-//         Gallery
-//       </Typography>
-//       <GalleryGrid />
-//     </div>
-//   );
-// }
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Container,
@@ -23,104 +9,33 @@ import {
   Dialog,
   DialogContent,
   IconButton,
-  Zoom,
   Stack,
-  Divider,
-  createTheme,
-  ThemeProvider,
-  CssBaseline,
-  CardMedia,
+  Fade,
+  Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import GridViewIcon from "@mui/icons-material/GridView";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import { keyframes } from "@mui/material/styles";
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
-const theme = createTheme({
-  palette: {
-    background: { default: "#fdf7f0" },
-    primary: { main: "#5c4a30" },
-    secondary: { main: "#b89e7e" },
-    text: {
-      primary: "#2a1f12",
-      secondary: "#8a7560",
-      disabled: "#c4b49a",
-    },
-  },
-  typography: {
-    fontFamily: "'DM Sans', sans-serif",
-    h1: { fontFamily: "'Playfair Display', serif", fontWeight: 900 },
-    h2: { fontFamily: "'Playfair Display', serif", fontWeight: 700 },
-    h6: { fontFamily: "'Playfair Display', serif", fontWeight: 700 },
-  },
-  shape: { borderRadius: 16 },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap');
-        .gallery-card:hover .card-img {
-          transform: scale(1.07);
-        }
-        .gallery-card:hover .card-overlay {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-        }
-        .gallery-card:hover { z-index: 2; }
-        @keyframes gridIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .gallery-grid-enter {
-          opacity: 0;
-          animation: gridIn 0.5s ease forwards;
-        }
-      `,
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 500,
-          letterSpacing: "0.03em",
-          borderRadius: 50,
-          transition: "all 0.25s ease",
-        },
-        colorPrimary: {
-          background: "#5c4a30",
-          borderColor: "#5c4a30",
-          color: "#fff8ef",
-          "&:hover": { background: "#4a3a22 !important" },
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 16,
-          transition:
-            "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease",
-          "&:hover": {
-            transform: "translateY(-6px) scale(1.02)",
-            boxShadow: "0 24px 48px rgba(0,0,0,0.22)",
-          },
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          borderRadius: 24,
-          overflow: "hidden",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.5)",
-        },
-        backdrop: { backdropFilter: "blur(8px)" },
-      },
-    },
-  },
-});
+// ── Animations ────────────────────────────────────────────────────────────────
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+const shimmer = keyframes`
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+`;
+const pulse = keyframes`
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.15); opacity: 0.7; }
+`;
 
-// ─── Data  (replace image URLs with your own photos) ─────────────────────────
+// ── Gallery Data ──────────────────────────────────────────────────────────────
 const galleryData = [
   {
     id: 1,
@@ -128,7 +43,7 @@ const galleryData = [
     title: "Annual Sports Day",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&q=80",
+      "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80",
     span: { col: 1, row: 2 },
   },
   {
@@ -146,7 +61,7 @@ const galleryData = [
     title: "Painting Exhibition",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1526285759904-71d1170ed2ac?w=600&q=80",
+      "https://images.unsplash.com/photo-1526285759904-71d1170ed2ac?w=800&q=80",
     span: { col: 1, row: 1 },
   },
   {
@@ -161,10 +76,10 @@ const galleryData = [
   {
     id: 5,
     category: "Science",
-    title: "Robotics Club Showcase",
+    title: "Physics Demonstration",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1561144257-e32e8506-0baa?w=600&q=80",
+      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80",
     span: { col: 1, row: 1 },
   },
   {
@@ -173,7 +88,7 @@ const galleryData = [
     title: "Drama & Theater Night",
     year: "2023",
     image:
-      "https://images.unsplash.com/photo-1503095396549-807759245b35?w=600&q=80",
+      "https://images.unsplash.com/photo-1503095396549-807759245b35?w=800&q=80",
     span: { col: 1, row: 2 },
   },
   {
@@ -182,7 +97,7 @@ const galleryData = [
     title: "Basketball Tournament",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1546519638405-a9f06f3b4f47?w=600&q=80",
+      "https://images.unsplash.com/photo-1546519638405-a9f06f3b4f47?w=800&q=80",
     span: { col: 1, row: 1 },
   },
   {
@@ -197,10 +112,10 @@ const galleryData = [
   {
     id: 9,
     category: "Sports",
-    title: "Swimming Gala",
+    title: "Athletics Track Meet",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=600&q=80",
+      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80",
     span: { col: 1, row: 2 },
   },
   {
@@ -209,7 +124,7 @@ const galleryData = [
     title: "Music Recital Evening",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80",
+      "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80",
     span: { col: 1, row: 1 },
   },
   {
@@ -224,285 +139,461 @@ const galleryData = [
   {
     id: 12,
     category: "Sports",
-    title: "Athletics Track Meet",
+    title: "Kabaddi Championship",
     year: "2024",
     image:
-      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=80",
+      "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=800&q=80",
     span: { col: 1, row: 1 },
   },
 ];
 
 const CATEGORIES = ["All", "Events", "Science", "Arts", "Sports"];
 
-// ─── GalleryCard ──────────────────────────────────────────────────────────────
-function GalleryCard({ item, index, onClick }) {
+const CAT_META = {
+  All: { color: "#e85d04", bg: "#fff5eb", emoji: "✨" },
+  Events: { color: "#2980B9", bg: "#EBF5FB", emoji: "🎉" },
+  Science: { color: "#27AE60", bg: "#EAFAF1", emoji: "🔬" },
+  Arts: { color: "#8E44AD", bg: "#F4ECF7", emoji: "🎨" },
+  Sports: { color: "#e85d04", bg: "#fff5eb", emoji: "🏆" },
+};
+
+// ── Skeleton loader ───────────────────────────────────────────────────────────
+function ImageSkeleton() {
   return (
-    <Card
-      className="gallery-card gallery-grid-enter"
-      elevation={3}
+    <Box
       sx={{
-        gridColumn: `span ${item.span.col}`,
-        gridRow: `span ${item.span.row}`,
-        minHeight: item.span.row === 2 ? 320 : 180,
-        animationDelay: `${index * 0.06}s`,
-        position: "relative",
-        overflow: "hidden",
-        bgcolor: "#ddd",
+        position: "absolute",
+        inset: 0,
+        background:
+          "linear-gradient(90deg, #f0ebe5 25%, #faf7f4 50%, #f0ebe5 75%)",
+        backgroundSize: "600px 100%",
+        animation: `${shimmer} 1.4s infinite`,
       }}
-    >
-      <CardActionArea
-        onClick={onClick}
-        sx={{ height: "100%", display: "block", position: "relative" }}
-      >
-        {/* Image */}
-        <Box
-          className="card-img"
-          component="img"
-          src={item.image}
-          alt={item.title}
-          sx={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transition: "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            display: "block",
-          }}
-        />
-
-        {/* Permanent dark gradient at bottom for badge readability */}
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            pointerEvents: "none",
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%)",
-          }}
-        />
-
-        {/* Year badge */}
-        <Chip
-          label={item.year}
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 1,
-            background: "rgba(0,0,0,0.45)",
-            backdropFilter: "blur(6px)",
-            fontSize: 11,
-            fontWeight: 500,
-            color: "#fff",
-            border: "1px solid rgba(255,255,255,0.2)",
-            height: 22,
-          }}
-        />
-
-        {/* Category badge */}
-        <Chip
-          label={item.category}
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            zIndex: 1,
-            background: "rgba(255,255,255,0.2)",
-            backdropFilter: "blur(6px)",
-            fontSize: 11,
-            fontWeight: 500,
-            color: "#fff",
-            border: "1px solid rgba(255,255,255,0.3)",
-            height: 22,
-          }}
-        />
-
-        {/* Hover overlay — title reveal */}
-        <Box
-          className="card-overlay"
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)",
-            px: 2.5,
-            pb: 2.5,
-            pt: 6,
-            opacity: 0,
-            transform: "translateY(10px)",
-            transition: "opacity 0.35s ease, transform 0.35s ease",
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{ color: "#fff", fontSize: 15, lineHeight: 1.35 }}
-          >
-            {item.title}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: "rgba(255,255,255,0.65)", mt: 0.4, display: "block" }}
-          >
-            {item.category} · {item.year}
-          </Typography>
-        </Box>
-      </CardActionArea>
-    </Card>
+    />
   );
 }
 
-// ─── Lightbox Dialog ──────────────────────────────────────────────────────────
+// ── Gallery Card ──────────────────────────────────────────────────────────────
+function GalleryCard({ item, index, onClick, isMasonry }) {
+  const [loaded, setLoaded] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const meta = CAT_META[item.category] || CAT_META.All;
+
+  return (
+    <Box
+      className="gallery-item"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+      sx={{
+        gridColumn: isMasonry ? `span ${item.span.col}` : "span 1",
+        gridRow: isMasonry ? `span ${item.span.row}` : "span 1",
+        minHeight: isMasonry ? (item.span.row === 2 ? 340 : 180) : 200,
+        position: "relative",
+        borderRadius: 3,
+        overflow: "hidden",
+        cursor: "pointer",
+        animation: `${fadeUp} 0.45s ease ${index * 0.055}s both`,
+        border: `2px solid ${hovered ? meta.color : "transparent"}`,
+        transition:
+          "border-color 0.25s, transform 0.3s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.3s",
+        transform: hovered ? "translateY(-6px) scale(1.015)" : "none",
+        boxShadow: hovered
+          ? `0 24px 56px ${meta.color}33`
+          : "0 2px 12px rgba(0,0,0,0.1)",
+      }}
+    >
+      {/* Skeleton */}
+      {!loaded && <ImageSkeleton />}
+
+      {/* Image */}
+      <Box
+        component="img"
+        src={item.image}
+        alt={item.title}
+        onLoad={() => setLoaded(true)}
+        sx={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+          transition: "transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)",
+          transform: hovered ? "scale(1.08)" : "scale(1)",
+          opacity: loaded ? 1 : 0,
+        }}
+      />
+
+      {/* Base gradient */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)",
+        }}
+      />
+
+      {/* Hover full overlay */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          background: `linear-gradient(135deg, ${meta.color}55 0%, rgba(0,0,0,0.55) 100%)`,
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.3s",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Category badge */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 12,
+          left: 12,
+          zIndex: 2,
+          bgcolor: meta.bg,
+          color: meta.color,
+          borderRadius: 2,
+          px: 1.2,
+          py: 0.3,
+          fontSize: 11,
+          fontWeight: 700,
+          border: `1px solid ${meta.color}44`,
+          fontFamily: "'DM Sans',sans-serif",
+          backdropFilter: "blur(8px)",
+          opacity: hovered ? 1 : 0.85,
+          transition: "opacity 0.25s",
+        }}
+      >
+        {meta.emoji} {item.category}
+      </Box>
+
+      {/* Year badge */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          zIndex: 2,
+          bgcolor: "rgba(0,0,0,0.45)",
+          color: "#fff",
+          borderRadius: 2,
+          px: 1.2,
+          py: 0.3,
+          fontSize: 11,
+          fontWeight: 600,
+          border: "1px solid rgba(255,255,255,0.2)",
+          fontFamily: "'DM Sans',sans-serif",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        {item.year}
+      </Box>
+
+      {/* Title (always visible at bottom) */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2,
+          px: 2,
+          pb: 2,
+          pt: 5,
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
+          transform: hovered ? "translateY(0)" : "translateY(4px)",
+          transition: "transform 0.3s",
+        }}
+      >
+        <Typography
+          sx={{
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: { xs: 13, sm: 14 },
+            fontFamily: "'Playfair Display',serif",
+            lineHeight: 1.3,
+            textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+          }}
+        >
+          {item.title}
+        </Typography>
+        <Typography
+          sx={{
+            color: "rgba(255,255,255,0.65)",
+            fontSize: 11,
+            fontFamily: "'DM Sans',sans-serif",
+            mt: 0.3,
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.3s 0.05s",
+          }}
+        >
+          {item.category} · {item.year}
+        </Typography>
+      </Box>
+
+      {/* Center zoom icon on hover */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.25s",
+          pointerEvents: "none",
+        }}
+      >
+        <Box
+          sx={{
+            width: 48,
+            height: 48,
+            borderRadius: "50%",
+            bgcolor: "rgba(255,255,255,0.18)",
+            backdropFilter: "blur(8px)",
+            border: "2px solid rgba(255,255,255,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: hovered ? `${pulse} 1.5s infinite` : "none",
+          }}
+        >
+          <PhotoCameraIcon sx={{ color: "#fff", fontSize: 22 }} />
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
 function Lightbox({ item, filtered, onClose, onNavigate }) {
   const idx = filtered.findIndex((i) => i.id === item.id);
+  const meta = CAT_META[item.category] || CAT_META.All;
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [item.id]);
 
   return (
     <Dialog
       open
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
-      TransitionComponent={Zoom}
-      transitionDuration={300}
-      slotProps={{ backdrop: { sx: { background: "rgba(10,8,5,0.92)" } } }}
+      TransitionComponent={Fade}
+      transitionDuration={250}
+      slotProps={{
+        backdrop: {
+          sx: { background: "rgba(10,5,0,0.92)", backdropFilter: "blur(12px)" },
+        },
+      }}
+      PaperProps={{
+        sx: {
+          borderRadius: 4,
+          overflow: "hidden",
+          bgcolor: "#111",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: `0 40px 100px ${meta.color}44`,
+          mx: { xs: 1, sm: 3 },
+        },
+      }}
     >
-      {/* Prev */}
-      <IconButton
-        onClick={() =>
-          onNavigate((idx - 1 + filtered.length) % filtered.length)
-        }
+      {/* Header bar */}
+      <Box
         sx={{
-          position: "fixed",
-          left: "calc(50% - 320px)",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.12)",
-          color: "#fff",
-          backdropFilter: "blur(4px)",
-          "&:hover": { background: "rgba(255,255,255,0.28)" },
+          background: `linear-gradient(90deg,#1a0a00,${meta.color}88)`,
+          px: 2.5,
+          py: 1.5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: `2px solid ${meta.color}`,
         }}
       >
-        <ArrowBackIosNewIcon fontSize="small" />
-      </IconButton>
-
-      {/* Next */}
-      <IconButton
-        onClick={() => onNavigate((idx + 1) % filtered.length)}
-        sx={{
-          position: "fixed",
-          right: "calc(50% - 320px)",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.12)",
-          color: "#fff",
-          backdropFilter: "blur(4px)",
-          "&:hover": { background: "rgba(255,255,255,0.28)" },
-        }}
-      >
-        <ArrowForwardIosIcon fontSize="small" />
-      </IconButton>
-
-      {/* Close */}
-      <IconButton
-        onClick={onClose}
-        size="small"
-        sx={{
-          position: "absolute",
-          top: 12,
-          right: 12,
-          zIndex: 10,
-          background: "rgba(0,0,0,0.4)",
-          color: "#fff",
-          "&:hover": { background: "rgba(0,0,0,0.65)" },
-        }}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-
-      <DialogContent
-        sx={{ p: 0, position: "relative", overflow: "hidden", bgcolor: "#111" }}
-      >
-        {/* Full image */}
-        <Box
-          component="img"
-          src={item.image}
-          alt={item.title}
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <Box
+            sx={{
+              bgcolor: meta.bg,
+              color: meta.color,
+              borderRadius: 2,
+              px: 1.2,
+              py: 0.3,
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: "'DM Sans',sans-serif",
+            }}
+          >
+            {meta.emoji} {item.category}
+          </Box>
+          <Typography
+            sx={{
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 12,
+              fontFamily: "'DM Sans',sans-serif",
+            }}
+          >
+            {idx + 1} / {filtered.length}
+          </Typography>
+        </Stack>
+        <IconButton
+          onClick={onClose}
+          size="small"
           sx={{
-            width: "100%",
-            maxHeight: "65vh",
-            objectFit: "cover",
-            display: "block",
+            color: "#fff",
+            bgcolor: "rgba(255,255,255,0.1)",
+            borderRadius: 2,
+            "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
           }}
-        />
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+
+      <DialogContent sx={{ p: 0, position: "relative", bgcolor: "#0d0d0d" }}>
+        {/* Nav arrows */}
+        {[
+          {
+            dir: "left",
+            Icon: ArrowBackIosNewIcon,
+            action: () =>
+              onNavigate((idx - 1 + filtered.length) % filtered.length),
+          },
+          {
+            dir: "right",
+            Icon: ArrowForwardIosIcon,
+            action: () => onNavigate((idx + 1) % filtered.length),
+          },
+        ].map(({ dir, Icon, action }) => (
+          <IconButton
+            key={dir}
+            onClick={action}
+            sx={{
+              position: "absolute",
+              [dir]: { xs: 6, sm: 12 },
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              bgcolor: "rgba(255,255,255,0.12)",
+              color: "#fff",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: 2,
+              "&:hover": { bgcolor: `${meta.color}99` },
+              transition: "background 0.2s",
+            }}
+          >
+            <Icon sx={{ fontSize: 18 }} />
+          </IconButton>
+        ))}
+
+        {/* Image */}
+        <Box sx={{ position: "relative", minHeight: { xs: 220, sm: 360 } }}>
+          {!loaded && <ImageSkeleton />}
+          <Box
+            component="img"
+            src={item.image}
+            alt={item.title}
+            onLoad={() => setLoaded(true)}
+            sx={{
+              width: "100%",
+              maxHeight: { xs: "55vh", sm: "65vh" },
+              objectFit: "cover",
+              display: "block",
+              opacity: loaded ? 1 : 0,
+              transition: "opacity 0.4s",
+            }}
+          />
+        </Box>
 
         {/* Info panel */}
-        <Box sx={{ px: 3, py: 2.5, bgcolor: "#1a1410" }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={0.75}
-          >
-            <Chip
-              label={item.category}
-              size="small"
-              sx={{
-                background: "rgba(255,255,255,0.1)",
-                color: "rgba(255,255,255,0.7)",
-                fontSize: 11,
-                fontWeight: 500,
-                letterSpacing: "0.06em",
-                border: "1px solid rgba(255,255,255,0.15)",
-                height: 22,
-              }}
-            />
-            <Typography
-              variant="caption"
-              sx={{ color: "rgba(255,255,255,0.4)", fontWeight: 300 }}
-            >
-              Class of {item.year}
-            </Typography>
-          </Stack>
-
+        <Box sx={{ px: { xs: 2.5, sm: 3 }, py: 2.5, bgcolor: "#141414" }}>
           <Typography
-            variant="h2"
-            sx={{ fontSize: 22, color: "#fff", lineHeight: 1.3, mb: 2 }}
+            sx={{
+              fontFamily: "'Playfair Display',serif",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: { xs: 18, sm: 22 },
+              mb: 0.5,
+              lineHeight: 1.3,
+            }}
           >
             {item.title}
           </Typography>
+          <Typography
+            sx={{
+              color: "rgba(255,255,255,0.45)",
+              fontSize: 12,
+              fontFamily: "'DM Sans',sans-serif",
+              mb: 2,
+            }}
+          >
+            Captured in {item.year} · {item.category}
+          </Typography>
 
           {/* Dot navigation */}
-          <Stack direction="row" spacing={0.75} justifyContent="center">
-            {filtered.map((_, i) => (
+          <Stack direction="row" spacing={0.6} flexWrap="wrap" gap={0.5}>
+            {filtered.map((fi, i) => (
               <Box
                 key={i}
                 onClick={() => onNavigate(i)}
                 sx={{
-                  width: i === idx ? 20 : 6,
-                  height: 6,
-                  borderRadius: 3,
+                  width: i === idx ? 24 : 7,
+                  height: 7,
+                  borderRadius: 4,
                   cursor: "pointer",
-                  backgroundColor:
-                    i === idx ? "#b89e7e" : "rgba(255,255,255,0.2)",
-                  transition: "all 0.3s ease",
+                  bgcolor: i === idx ? meta.color : "rgba(255,255,255,0.18)",
+                  border:
+                    i === idx
+                      ? `1px solid ${meta.color}`
+                      : "1px solid transparent",
+                  transition: "all 0.3s",
+                  "&:hover": {
+                    bgcolor: i === idx ? meta.color : "rgba(255,255,255,0.38)",
+                  },
                 }}
               />
             ))}
           </Stack>
+        </Box>
+
+        {/* Keyboard hint */}
+        <Box
+          sx={{
+            px: 3,
+            pb: 2,
+            display: "flex",
+            justifyContent: "flex-end",
+            bgcolor: "#141414",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: 11,
+              color: "rgba(255,255,255,0.2)",
+              fontFamily: "'DM Sans',sans-serif",
+            }}
+          >
+            ← → arrow keys to navigate · Esc to close
+          </Typography>
         </Box>
       </DialogContent>
     </Dialog>
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────
 export default function SchoolGallery() {
   const [active, setActive] = useState("All");
   const [lightbox, setLightbox] = useState(null);
+  const [isMasonry, setIsMasonry] = useState(true);
 
   const filtered =
     active === "All"
@@ -523,153 +614,342 @@ export default function SchoolGallery() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [lightbox, filtered]);
 
+  const counts = CATEGORIES.reduce((acc, cat) => {
+    acc[cat] =
+      cat === "All"
+        ? galleryData.length
+        : galleryData.filter((i) => i.category === cat).length;
+    return acc;
+  }, {});
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ bgcolor: "background.default", minHeight: "100vh", py: 8 }}>
-        <Container maxWidth="lg">
-          {/* Header */}
-          <Box mb={6}>
-            <Typography
-              variant="overline"
-              sx={{
-                color: "secondary.main",
-                letterSpacing: "0.18em",
-                fontWeight: 500,
-              }}
-            >
-              Capturing Our Journey
-            </Typography>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: "clamp(48px, 6vw, 80px)",
-                lineHeight: 1,
-                mt: 1.5,
-                mb: 2,
-              }}
-            >
-              School Gallery
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 300,
-                lineHeight: 1.65,
-                maxWidth: 480,
-              }}
-            >
-              A living archive of our community's brightest moments — from
-              classrooms to championship podiums.
-            </Typography>
-          </Box>
+    <Box sx={{ bgcolor: "#f5f0eb", minHeight: "100vh", pb: 8 }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+      `}</style>
 
-          <Divider sx={{ borderColor: "#e8ddd0", mb: 4 }} />
+      {/* ── Hero ── */}
+      <Box
+        sx={{
+          background:
+            "linear-gradient(150deg,#1a0a00 0%,#3d1200 45%,#7a2600 75%,#e85d04 100%)",
+          position: "relative",
+          overflow: "hidden",
+          px: { xs: 3, sm: 5, md: 8 },
+          pt: { xs: 6, md: 8 },
+          pb: { xs: 5, md: 7 },
+        }}
+      >
+        {/* Decorative rings */}
+        {[
+          { s: 500, t: -160, r: -120 },
+          { s: 280, b: -80, l: -60 },
+        ].map((c, i) => (
+          <Box
+            key={i}
+            sx={{
+              position: "absolute",
+              width: c.s,
+              height: c.s,
+              borderRadius: "50%",
+              border: "1.5px solid rgba(244,140,6,0.18)",
+              top: c.t,
+              bottom: c.b,
+              left: c.l,
+              right: c.r,
+              pointerEvents: "none",
+            }}
+          />
+        ))}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            background:
+              "linear-gradient(90deg,#e85d04,#f48c06,#ffd580,#f48c06,#e85d04)",
+          }}
+        />
 
-          {/* Filters */}
-          <Stack
-            direction="row"
-            spacing={1.25}
-            flexWrap="wrap"
-            useFlexGap
-            mb={3}
+        <Box sx={{ position: "relative", zIndex: 1 }}>
+          <Chip
+            label="📸 College Life"
+            size="small"
+            sx={{
+              bgcolor: "rgba(244,140,6,0.18)",
+              color: "#ffd580",
+              border: "1px solid rgba(244,140,6,0.3)",
+              fontWeight: 700,
+              mb: 2,
+              fontFamily: "'DM Sans',sans-serif",
+            }}
+          />
+          <Typography
+            sx={{
+              fontFamily: "'Playfair Display',serif",
+              fontWeight: 800,
+              color: "#fff",
+              fontSize: { xs: "2rem", sm: "2.8rem", md: "3.5rem" },
+              lineHeight: 1.15,
+              mb: 1.5,
+            }}
           >
-            {CATEGORIES.map((cat) => (
-              <Chip
-                key={cat}
-                label={cat}
-                clickable
-                color={active === cat ? "primary" : "default"}
-                variant={active === cat ? "filled" : "outlined"}
-                onClick={() => setActive(cat)}
-              />
+            Our{" "}
+            <Box component="span" sx={{ color: "#f48c06" }}>
+              Gallery
+            </Box>
+          </Typography>
+          <Typography
+            sx={{
+              color: "rgba(255,255,255,0.6)",
+              maxWidth: 480,
+              fontSize: { xs: "0.88rem", md: "1rem" },
+              fontFamily: "'DM Sans',sans-serif",
+              lineHeight: 1.7,
+              mb: 3,
+            }}
+          >
+            A living archive of our community's brightest moments — from
+            classrooms to championship podiums.
+          </Typography>
+
+          {/* Stat pills */}
+          <Stack direction="row" flexWrap="wrap" gap={1.5}>
+            {[
+              ["📷", galleryData.length, "Photos"],
+              ["🗂️", CATEGORIES.length - 1, "Categories"],
+              ["📅", "2023–24", "Sessions"],
+            ].map(([icon, val, lbl]) => (
+              <Box
+                key={lbl}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  bgcolor: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(244,140,6,0.2)",
+                  borderRadius: 3,
+                  px: 2,
+                  py: 0.8,
+                }}
+              >
+                <Typography fontSize={16}>{icon}</Typography>
+                <Box>
+                  <Typography
+                    sx={{
+                      color: "#f48c06",
+                      fontWeight: 800,
+                      fontSize: "1rem",
+                      fontFamily: "'Playfair Display',serif",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {val}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "rgba(255,255,255,0.4)",
+                      fontSize: "0.62rem",
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      fontFamily: "'DM Sans',sans-serif",
+                    }}
+                  >
+                    {lbl}
+                  </Typography>
+                </Box>
+              </Box>
             ))}
           </Stack>
+        </Box>
+      </Box>
 
-          {/* Stats bar */}
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={3.5}
-          >
-            <Typography variant="body2" color="text.secondary" fontWeight={300}>
-              Showing{" "}
-              <Box
-                component="strong"
-                sx={{ color: "text.primary", fontWeight: 600 }}
-              >
-                {filtered.length}
-              </Box>{" "}
-              photos
-              {active !== "All" && (
-                <>
-                  {" "}
-                  in{" "}
-                  <Box
-                    component="strong"
-                    sx={{ color: "text.primary", fontWeight: 600 }}
-                  >
-                    {active}
-                  </Box>
-                </>
-              )}
-            </Typography>
-            <Stack direction="row" spacing={0.5}>
-              {filtered.map((_, i) => (
+      <Container maxWidth="lg" sx={{ mt: { xs: 3, md: 4 } }}>
+        {/* ── Controls ── */}
+        <Box
+          sx={{
+            bgcolor: "#fff",
+            borderRadius: 4,
+            p: { xs: 2, sm: 2.5 },
+            mb: 3,
+            border: "1.5px solid #ece8e2",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "flex-start", sm: "center" },
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          {/* Category filters */}
+          <Stack direction="row" flexWrap="wrap" gap={1}>
+            {CATEGORIES.map((cat) => {
+              const isActive = active === cat;
+              const meta = CAT_META[cat];
+              return (
                 <Box
-                  key={i}
+                  key={cat}
+                  onClick={() => setActive(cat)}
                   sx={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    backgroundColor: "#d4c5a9",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.8,
+                    px: 2,
+                    py: 0.8,
+                    borderRadius: 3,
+                    cursor: "pointer",
+                    bgcolor: isActive ? meta.color : "#f5f0eb",
+                    color: isActive ? "#fff" : "#6b4f3a",
+                    border: `1.5px solid ${isActive ? meta.color : "transparent"}`,
+                    transition: "all 0.2s",
+                    fontFamily: "'DM Sans',sans-serif",
+                    fontWeight: 700,
+                    fontSize: { xs: 12, sm: 13 },
+                    "&:hover": { bgcolor: isActive ? meta.color : "#ece8e2" },
                   }}
-                />
+                >
+                  <span>{meta.emoji}</span>
+                  <span>{cat}</span>
+                  <Box
+                    sx={{
+                      bgcolor: isActive
+                        ? "rgba(255,255,255,0.25)"
+                        : "rgba(232,93,4,0.1)",
+                      color: isActive ? "#fff" : meta.color,
+                      borderRadius: "50%",
+                      width: 20,
+                      height: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 10,
+                      fontWeight: 800,
+                    }}
+                  >
+                    {counts[cat]}
+                  </Box>
+                </Box>
+              );
+            })}
+          </Stack>
+
+          {/* Layout toggle + count */}
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Typography
+              sx={{
+                fontSize: 12,
+                color: "#999",
+                fontFamily: "'DM Sans',sans-serif",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {filtered.length} photos
+            </Typography>
+            <Stack direction="row" gap={0.5}>
+              {[
+                {
+                  icon: <ViewModuleIcon fontSize="small" />,
+                  val: true,
+                  label: "Masonry",
+                },
+                {
+                  icon: <GridViewIcon fontSize="small" />,
+                  val: false,
+                  label: "Grid",
+                },
+              ].map(({ icon, val, label }) => (
+                <Tooltip title={label} key={label}>
+                  <IconButton
+                    onClick={() => setIsMasonry(val)}
+                    size="small"
+                    sx={{
+                      borderRadius: 2,
+                      p: 0.8,
+                      bgcolor: isMasonry === val ? "#e85d04" : "#f5f0eb",
+                      color: isMasonry === val ? "#fff" : "#999",
+                      "&:hover": {
+                        bgcolor: isMasonry === val ? "#c44d00" : "#ece8e2",
+                      },
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {icon}
+                  </IconButton>
+                </Tooltip>
               ))}
             </Stack>
           </Stack>
+        </Box>
 
-          {/* Grid */}
-          <Box
+        {/* ── Grid ── */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: isMasonry
+              ? {
+                  xs: "repeat(2, 1fr)",
+                  sm: "repeat(3, 1fr)",
+                  md: "repeat(4, 1fr)",
+                }
+              : {
+                  xs: "repeat(2, 1fr)",
+                  sm: "repeat(3, 1fr)",
+                  md: "repeat(4, 1fr)",
+                },
+            gridAutoRows: isMasonry
+              ? { xs: 130, sm: 160, md: 180 }
+              : { xs: 150, sm: 180, md: 200 },
+            gap: { xs: 1.5, sm: 2 },
+          }}
+        >
+          {filtered.map((item, i) => (
+            <GalleryCard
+              key={`${item.id}-${active}`}
+              item={item}
+              index={i}
+              onClick={() => setLightbox(item)}
+              isMasonry={isMasonry}
+            />
+          ))}
+        </Box>
+
+        {/* Empty state */}
+        {filtered.length === 0 && (
+          <Box textAlign="center" py={10}>
+            <Typography fontSize={48} mb={2}>
+              📷
+            </Typography>
+            <Typography
+              sx={{ color: "#999", fontFamily: "'DM Sans',sans-serif" }}
+            >
+              No photos in this category yet.
+            </Typography>
+          </Box>
+        )}
+
+        {/* ── Footer ── */}
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={1}
+          mt={6}
+        >
+          <PhotoCameraIcon sx={{ fontSize: 15, color: "#ccc" }} />
+          <Typography
             sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gridAutoRows: 180,
-              gap: 2,
+              fontSize: 12,
+              color: "#bbb",
+              fontFamily: "'DM Sans',sans-serif",
             }}
           >
-            {filtered.map((item, i) => (
-              <GalleryCard
-                key={item.id}
-                item={item}
-                index={i}
-                onClick={() => setLightbox(item)}
-              />
-            ))}
-          </Box>
+            Click any photo · Arrow keys to navigate · Esc to close
+          </Typography>
+        </Stack>
+      </Container>
 
-          {/* Footer */}
-          <Stack
-            direction="row"
-            spacing={1}
-            justifyContent="center"
-            alignItems="center"
-            mt={8}
-          >
-            <PhotoCameraIcon sx={{ fontSize: 16, color: "text.disabled" }} />
-            <Typography
-              variant="caption"
-              color="text.disabled"
-              letterSpacing="0.02em"
-            >
-              Click any photo to view · Use arrow keys to navigate
-            </Typography>
-          </Stack>
-        </Container>
-      </Box>
-
+      {/* ── Lightbox ── */}
       {lightbox && (
         <Lightbox
           item={lightbox}
@@ -678,6 +958,6 @@ export default function SchoolGallery() {
           onNavigate={(idx) => setLightbox(filtered[idx])}
         />
       )}
-    </ThemeProvider>
+    </Box>
   );
 }
